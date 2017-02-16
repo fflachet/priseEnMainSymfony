@@ -1,11 +1,39 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/security.html
 security:
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_GREEN,ROLE_YELLOW,ROLE_RED,ROLE_BLUE
+        ROLE_GREEN : ROLE_USER
+        ROLE_YELLOW : ROLE_USER
+        ROLE_RED : ROLE_USER
+        ROLE_BLUE : ROLE_USER
 
     # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
         in_memory:
-            memory: ~
+            memory:
+                users:
+                    ryan:
+                        password: ryanpass
+                        roles: 'ROLE_USER'
+                    admin:
+                        password: admin
+                        roles: 'ROLE_ADMIN'
+                    mrGreen:
+                        password: green
+                        roles: 'ROLE_GREEN'
+                    mrYellow:
+                        password: yellow
+                        roles: 'ROLE_YELLOW'
+                    mrRed:
+                        password: red
+                        roles: 'ROLE_RED'
+                    mrBlue:
+                        password: blue
+                        roles: 'ROLE_BLUE'
+                        
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -17,8 +45,29 @@ security:
             anonymous: ~
             # activate different ways to authenticate
 
-            # http_basic: ~
-            # http://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+            #http_basic: ~
+            #http://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+            
+            
+                
+            form_login:
+                # submit the login form here
+                check_path: /loginCheck
 
-            # form_login: ~
+                # the user is redirected here when they need to log in
+                login_path: /login
+#                target_path_parameter: redirect_url
             # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+            
+            logout:
+                path:   /logout
+                target: /
+    access_control:
+        # require ROLE_ADMIN for /admin*
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/green, roles: ROLE_GREEN }
+        - { path: ^/yellow, roles: ROLE_YELLOW }
+        - { path: ^/red, roles: ROLE_RED }
+        - { path: ^/blue, roles: ROLE_BLUE }
+
+    access_denied_url : /login

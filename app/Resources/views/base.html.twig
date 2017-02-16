@@ -18,6 +18,17 @@
                     <li><a href="{{path('y')}}">Yellow</a></li>
                     <li><a href="{{path('r')}}">Red</a></li>
                     <li><a href="{{path('g')}}">Green</a></li>
+                        {% if is_granted('ROLE_USER') %}
+                        <p>Hi <a class="user" href="{{path('logout')}}">{{app.user}}</a></p>    
+                        {% else %}
+                        <form action="{{ path('loginCheck') }}" method="post">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" name="_username" />
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="_password" />
+                            <input type="submit" name="login" />
+                        </form>
+                    {% endif %}
                 </ul>
             </nav>
         {% endblock %}
